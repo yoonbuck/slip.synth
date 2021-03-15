@@ -19,7 +19,7 @@ import { tune } from "./tune";
 import Button from "./util/Button";
 
 const SAMPLE_RATE = 41000;
-const SCALE_TONES = 19;
+const SCALE_TONES = 12;
 
 const serial = new Serial();
 let dirty = true;
@@ -80,18 +80,18 @@ let gain: GainNode;
 let scheduler: AudioScheduler;
 let audioInitialized = false;
 function initAudio() {
-  gen1 = new TriangleGenerator(41000);
+  gen1 = new SinGenerator(41000);
   gen1.amplitude = 1 / 2;
-  gen2 = new TriangleGenerator(41000);
+  gen2 = new SinGenerator(41000);
   gen2.amplitude = 1 / 4;
-  gen3 = new TriangleGenerator(41000);
-  gen3.amplitude = 1 / 6;
+  // gen3 = new TriangleGenerator(41000);
+  // gen3.amplitude = 1 / 6
   // gen4 = new TriangleGenerator(41000);
   // gen4.amplitude = 1 / 8;
   // gen5 = new TriangleGenerator(41000);
   // gen5.amplitude = 1 / 2;
 
-  sum = new Summer(41000, gen1, gen2, gen3);
+  sum = new Summer(41000, gen1, gen2);
   let { attack, decay, sustain, release } = presets[preset];
   env = new ADSREnvelope(sum, attack, decay, sustain, release);
   audioCtx = new AudioContext();
@@ -139,7 +139,7 @@ function data() {
         let freq = 440 * Math.pow(2, note / SCALE_TONES);
         gen1.frequency = 1 * freq;
         gen2.frequency = 2 * freq;
-        gen3.frequency = 4 * freq;
+        // gen3.frequency = 4 * freq;
         // gen4.frequency = 3 * freq;
         // gen5.frequency = 8 * freq;
       } else {
